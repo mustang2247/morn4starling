@@ -50,7 +50,7 @@ package morn.core.components {
 				removeChildren(0, -1, true);
 				if(_bitmap.clips != null)
 				{
-					var bitdata:BitmapData = new BitmapData(_btnLabel.width + _bitmap.width, _btnLabel.height);
+					var bitdata:BitmapData = new BitmapData(_btnLabel.width + _bitmap.width, _btnLabel.height, true, 0x0);
 					bitdata.draw(_bitmap);
 					var tex:Texture = Texture.fromBitmapData(bitdata);
 					bitdata.dispose();

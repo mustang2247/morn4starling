@@ -146,7 +146,8 @@ package morn.core.components {
 				scrollBar = getChildByName("scrollBar") as ScrollBar;
 				//创建新单元格				
 				var numX:int = _isVerticalLayout ? _repeatX : _repeatY;
-				var numY:int = (_isVerticalLayout ? _repeatY : _repeatX) + (_scrollBar ? 1 : 0);
+				//var numY:int = (_isVerticalLayout ? _repeatY : _repeatX) + (_scrollBar ? 1 : 0);
+				var numY:int = _isVerticalLayout ? _repeatY : _repeatX;
 				for (var k:int = 0; k < numY; k++) {
 					for (var l:int = 0; l < numX; l++) {
 						cell = _itemRender is XML ? View.createComp(_itemRender) as Box : new _itemRender();

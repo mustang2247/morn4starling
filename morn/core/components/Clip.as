@@ -324,7 +324,7 @@ package morn.core.components {
 			
 			if(_bitmap.clips != null)
 			{	
-				var bitdata:BitmapData = new BitmapData(_bitmap.clips[_bitmap.index].width, _bitmap.clips[_bitmap.index].height);
+				var bitdata:BitmapData = new BitmapData(_bitmap.clips[_bitmap.index].width, _bitmap.clips[_bitmap.index].height, true, 0x0);
 				bitdata.draw(_bitmap);
 				var tex:Texture = Texture.fromBitmapData(bitdata);
 				bitdata.dispose();

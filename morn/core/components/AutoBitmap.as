@@ -50,7 +50,8 @@ package morn.core.components {
 		override public function set width(value:Number):void {
 			if (_width != value) {
 				_width = value;
-				App.render.callLater(changeSize);
+				//App.render.callLater(changeSize);
+				changeSize();
 			}
 		}
 		
@@ -62,7 +63,8 @@ package morn.core.components {
 		override public function set height(value:Number):void {
 			if (_height != value) {
 				_height = value;
-				App.render.callLater(changeSize);
+				//App.render.callLater(changeSize);
+				changeSize();
 			}
 		}
 		
@@ -73,7 +75,8 @@ package morn.core.components {
 		
 		public function set sizeGrid(value:Array):void {
 			_sizeGrid = value;
-			App.render.callLater(changeSize);
+			//App.render.callLater(changeSize);
+			changeSize();
 		}
 		
 		override public function set bitmapData(value:BitmapData):void {

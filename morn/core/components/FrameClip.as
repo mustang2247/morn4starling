@@ -146,24 +146,22 @@ package morn.core.components {
 				_mc.stop();
 				
 				generateFrames();
-				
+				removeChildren(0, -1, true);
 				if (_mc && _images) {
-					removeChildren(0, -1, true);
 					addChild(_images[frame]);
-					
-					_contentWidth = mc.width;
-					_contentHeight = mc.height;
-					mc.width = width;
-					mc.height = height;
 				}
+				
+				_contentWidth = mc.width;
+				_contentHeight = mc.height;
 			}
 		}
-		
+			
 		override public function set width(value:Number):void {
 			super.width = value;
 			if (_mc) {
 				_mc.width = _width;
 			}
+			//generateFrames();
 		}
 		
 		override public function set height(value:Number):void {
@@ -171,6 +169,7 @@ package morn.core.components {
 			if (_mc) {
 				_mc.height = _height;
 			}
+			//generateFrames();
 		}
 		
 		/**当前帧(为了统一，frame从0开始，原始的movieclip从1开始)*/
@@ -185,7 +184,7 @@ package morn.core.components {
 				_frame = (_frame < _mc.totalFrames && _frame > -1) ? _frame : 0;
 				//_mc.currentFrame = _frame + 1;
 				removeChildren(0, -1, true);
-				addChild(_images[_frame]);
+				addChild(_images[frame]);
 				
 				sendEvent(UIEvent.FRAME_CHANGED);
 				if (_to && (_mc.currentFrame - 1 == _to)) {

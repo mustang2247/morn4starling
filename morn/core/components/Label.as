@@ -85,7 +85,9 @@ package morn.core.components {
 		}
 		
 		protected function changeText():void {
-			_textField.defaultTextFormat = _format;
+			if(_format != null) {
+				_textField.defaultTextFormat = _format;
+			}
 			_isHtml ? _textField.htmlText = App.lang.getLang(_text) : _textField.text = App.lang.getLang(_text);
 			
 			reDraw();
@@ -94,17 +96,28 @@ package morn.core.components {
 		override public function reDraw():void {
 			//画到场景里
 			removeChildren(0, -1, true);
-			if(width > 0 && height > 0)
+			var tempWidth:Number = width;
+			if(tempWidth == 0)
+			{
+				tempWidth = _textField.textWidth + 5;
+			}
+			var tempHeight:Number = height;
+			if(tempHeight == 0)
+			{
+				tempHeight = _textField.textHeight + 5;
+			}
+			
+			if(tempWidth > 0 && tempHeight > 0)
 			{
 				if(_bitmap.clips != null)
 				{
-					var bitdata:BitmapData = new BitmapData(_bitmap.width, _bitmap.height);
+					var bitdata:BitmapData = new BitmapData(_bitmap.width, _bitmap.height, false);
 					bitdata.draw(_bitmap.bitmapData);
 					var tex:Texture = Texture.fromBitmapData(bitdata);
 					bitdata.dispose();
 					var im:starling.display.Image = new starling.display.Image(tex);
-					im.scaleX = width / _bitmap.bitmapData.width;
-					im.scaleY = height / _bitmap.bitmapData.height;
+					im.scaleX = tempWidth / _bitmap.bitmapData.width;
+					im.scaleY = tempHeight / _bitmap.bitmapData.height;
 					addChild(im);
 				}
 				
@@ -112,7 +125,7 @@ package morn.core.components {
 				{
 					_textField.x += x;
 					_textField.y += y;
-					var par:Object = parent;
+					var par:Object = _textField.parent;
 					while(par != null)
 					{
 						_textField.x += par.x;
@@ -123,16 +136,13 @@ package morn.core.components {
 				}
 				else
 				{
-					if(_textField.textWidth > 0 && _textField.textHeight > 0) {
-						//var bitmapData:BitmapData = new BitmapData(_textField.textWidth, _textField.textHeight, true, 0x0);
-						var bitmapData:BitmapData = new BitmapData(width, height, true, 0x0);
-						bitmapData.draw(_textField);
-						var texture:Texture = Texture.fromBitmapData(bitmapData, false, false, scale);
-						bitmapData.dispose();
-						var mImage:starling.display.Image = new starling.display.Image(texture);
-						mImage.touchable = true;
-						addChild(mImage);
-					}
+					var bitmapData:BitmapData = new BitmapData(tempWidth, tempHeight, true, 0x0);
+					bitmapData.draw(_textField);
+					var texture:Texture = Texture.fromBitmapData(bitmapData, false, false, scale);
+					bitmapData.dispose();
+					var mImage:starling.display.Image = new starling.display.Image(texture);
+					mImage.touchable = true;
+					addChild(mImage);
 				}
 			}
 		}

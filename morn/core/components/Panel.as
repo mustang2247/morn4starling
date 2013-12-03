@@ -8,9 +8,10 @@ package morn.core.components {
 	
 	import morn.editor.core.IContent;
 	
-	import starling.events.Event;
-	import starling.display.Sprite;
+	import starling.core.Starling;
 	import starling.display.DisplayObject;
+	import starling.display.Sprite;
+	import starling.events.Event;
 	
 	/**面板*/
 	public class Panel extends Container implements IContent {
@@ -20,10 +21,18 @@ package morn.core.components {
 		
 		public function Panel() {
 			width = height = 100;
+			addEventListener(Event.ADDED, onAdded);
+		}
+		
+		override protected function onAdded(e:Event):void {
+			super.onAdded(e);
+			_content.x = x;
+			_content.y = y;
+			parent.addChild(_content);
 		}
 		
 		override protected function createChildren():void {
-			super.addChild(_content = new Box());
+			_content = new Box();
 		}
 		
 		override public function addChild(child:DisplayObject):DisplayObject {

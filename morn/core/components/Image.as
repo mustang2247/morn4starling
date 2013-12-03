@@ -3,6 +3,8 @@
  * Feedback yungzhu@gmail.com http://weibo.com/newyung
  */
 package morn.core.components {
+	import com.adobe.utils.AGALMiniAssembler;
+	
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -79,26 +81,72 @@ package morn.core.components {
 			removeChildren(0, -1, true);
 			if(_bitmap.clips != null)
 			{
-				var tex:Texture = Texture.fromBitmapData(_bitmap.bitmapData);
-				var im:starling.display.Image = new starling.display.Image(tex);
-				im.scaleX = width / _bitmap.width;
-				im.scaleY = height / _bitmap.height;
-				addChild(im);
+				if(_bitmap.bitmapData.width >= AGALMiniAssembler.MAX_TEXTURE_SIZE || _bitmap.bitmapData.height >= AGALMiniAssembler.MAX_TEXTURE_SIZE) {
+					var bitmapData0:BitmapData = new BitmapData(_bitmap.bitmapData.width / 2, _bitmap.bitmapData.height / 2, true, 0x0);
+					bitmapData0.copyPixels(_bitmap.bitmapData, new Rectangle(0, 0, _bitmap.bitmapData.width / 2, _bitmap.bitmapData.height / 2), new Point());
+					var tex0:Texture = Texture.fromBitmapData(bitmapData0);
+					bitmapData0.dispose();
+					var im0:starling.display.Image = new starling.display.Image(tex0);
+					im0.scaleX = width / _bitmap.width;
+					im0.scaleY = height / _bitmap.height;
+					im0.x = 0;
+					im0.y = 0;
+					addChild(im0);
+					
+					var bitmapData1:BitmapData = new BitmapData(_bitmap.bitmapData.width / 2, _bitmap.bitmapData.height / 2, true, 0x0);
+					bitmapData1.copyPixels(_bitmap.bitmapData, new Rectangle(_bitmap.bitmapData.width / 2, 0, _bitmap.bitmapData.width / 2, _bitmap.bitmapData.height / 2), new Point());
+					var tex1:Texture = Texture.fromBitmapData(bitmapData1);
+					bitmapData1.dispose();
+					var im1:starling.display.Image = new starling.display.Image(tex1);
+					im1.scaleX = width / _bitmap.width;
+					im1.scaleY = height / _bitmap.height;
+					im1.x = width / 2;
+					im1.y = 0;
+					addChild(im1);
+					
+					var bitmapData2:BitmapData = new BitmapData(_bitmap.bitmapData.width / 2, _bitmap.bitmapData.height / 2, true, 0x0);
+					bitmapData2.copyPixels(_bitmap.bitmapData, new Rectangle(0, _bitmap.bitmapData.height / 2, _bitmap.bitmapData.width / 2, _bitmap.bitmapData.height / 2), new Point());
+					var tex2:Texture = Texture.fromBitmapData(bitmapData2);
+					bitmapData2.dispose();
+					var im2:starling.display.Image = new starling.display.Image(tex2);
+					im2.scaleX = width / _bitmap.width;
+					im2.scaleY = height / _bitmap.height;
+					im2.x = 0;
+					im2.y = height / 2;
+					addChild(im2);
+					
+					var bitmapData3:BitmapData = new BitmapData(_bitmap.bitmapData.width / 2, _bitmap.bitmapData.height / 2, true, 0x0);
+					bitmapData3.copyPixels(_bitmap.bitmapData, new Rectangle(_bitmap.bitmapData.width / 2, _bitmap.bitmapData.height / 2, _bitmap.bitmapData.width / 2, _bitmap.bitmapData.height / 2), new Point());
+					var tex3:Texture = Texture.fromBitmapData(bitmapData3);
+					bitmapData3.dispose();
+					var im3:starling.display.Image = new starling.display.Image(tex3);
+					im3.scaleX = width / _bitmap.width;
+					im3.scaleY = height / _bitmap.height;
+					im3.x = width / 2;
+					im3.y = height / 2;
+					addChild(im3);
+				} else {
+					var tex:Texture = Texture.fromBitmapData(_bitmap.bitmapData);
+					var im:starling.display.Image = new starling.display.Image(tex);
+					im.width = width;
+					im.height = height;
+					addChild(im);
+				}
 			}
 		}
 		
 		override public function set width(value:Number):void {
 			super.width = value;
-			//_bitmap.width = width;
+			_bitmap.width = width;
 			
-			reDraw();
+			App.render.callLater(reDraw);
 		}
 		
 		override public function set height(value:Number):void {
 			super.height = value;
-			//_bitmap.height = height;
+			_bitmap.height = height;
 			
-			reDraw();
+			App.render.callLater(reDraw);
 		}
 		
 		/**九宫格信息(格式:左边距,上边距,右边距,下边距)*/

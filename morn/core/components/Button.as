@@ -136,11 +136,15 @@ package morn.core.components {
 			removeChildren(0, -1, true);
 			if(_bitmap.clips != null)
 			{
-				var bitdata:BitmapData = new BitmapData(_bitmap.width, _bitmap.height);
+				var bitdata:BitmapData = new BitmapData(_bitmap.bitmapData.width, _bitmap.bitmapData.height, true, 0x0);
 				bitdata.draw(_bitmap.bitmapData);
 				var tex:Texture = Texture.fromBitmapData(bitdata);
 				bitdata.dispose();
 				var im:starling.display.Image = new starling.display.Image(tex);
+//				im.scaleX = width / _bitmap.width;
+//				im.scaleY = height / _bitmap.height;
+				im.width = width;
+				im.height = height;
 				addChild(im);
 			}
 			addChild(_btnLabel);
