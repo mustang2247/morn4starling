@@ -1,6 +1,8 @@
 /**
  * Morn UI Version 2.4.1027 http://www.mornui.com/
  * Feedback yungzhu@gmail.com http://weibo.com/newyung
+ * 
+ * change box to clippedSprite by xiaoxiaofeitianma@gmail.com
  */
 package morn.core.components {
 	import flash.display.Graphics;
@@ -8,14 +10,16 @@ package morn.core.components {
 	
 	import morn.editor.core.IContent;
 	
-	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.extensions.ClippedSprite;
+	import starling.filters.BlurFilter;
 	
 	/**面板*/
 	public class Panel extends Container implements IContent {
-		protected var _content:Box;
+		//protected var _content:Box;
+		protected var _content:ClippedSprite;
 		protected var _vScrollBar:VScrollBar;
 		protected var _hScrollBar:HScrollBar;
 		
@@ -29,13 +33,19 @@ package morn.core.components {
 			_content.x = x;
 			_content.y = y;
 			parent.addChild(_content);
+			
+			parent.addChild(_vScrollBar);
 		}
 		
 		override protected function createChildren():void {
-			_content = new Box();
+			_content = new ClippedSprite();//new Box();
 		}
 		
 		override public function addChild(child:DisplayObject):DisplayObject {
+			trace(child);
+			if(child is VScrollBar) {
+				return null;
+			}
 			callLater(changeScroll);
 			return _content.addChild(child);
 		}
@@ -81,6 +91,8 @@ package morn.core.components {
 		}
 		
 		private function changeScroll():void {
+			oldStart = 0;
+			
 			var vShow:Boolean = _vScrollBar && _content.height > _height;
 			var hShow:Boolean = _hScrollBar && _content.width > _width;
 			var contentWidth:Number = vShow ? _width - _vScrollBar.width : _width;
@@ -89,24 +101,31 @@ package morn.core.components {
 			if (_vScrollBar) {
 				_vScrollBar.visible = _content.height > _height;
 				if (_vScrollBar.visible) {
-					_vScrollBar.x = _width - _vScrollBar.width;
-					_vScrollBar.y = 0;
+					_content.clipRect = new Rectangle(parent.x + x, parent.y + y, contentWidth, contentHeight);
+					_vScrollBar.x = x + contentWidth;
+					_vScrollBar.y = y;
 					_vScrollBar.height = _height - (hShow ? _hScrollBar.height : 0);
 					_vScrollBar.scrollSize = _content.height * 0.1;
 					_vScrollBar.thumbPercent = contentHeight / _content.height;
 					_vScrollBar.setScroll(0, _content.height - contentHeight, _vScrollBar.value);
+					
+					oldStart = Math.round(_vScrollBar.value);
 				}
 			}
 			if (_hScrollBar) {
 				_hScrollBar.visible = _content.width > _width;
 				if (_hScrollBar.visible) {
-					_hScrollBar.x = 0;
-					_hScrollBar.y = _height - _hScrollBar.height;
+					_content.clipRect = new Rectangle(parent.x + x, parent.y + y, contentWidth, contentHeight);
+					_hScrollBar.x = x;
+					_hScrollBar.y = y + contentHeight;
 					_hScrollBar.width = _width - (vShow ? _vScrollBar.width : 0);
 					_hScrollBar.thumbPercent = contentWidth / _content.width;
 					_hScrollBar.setScroll(0, _content.width - contentWidth, _hScrollBar.value);
+					
+					oldStart = Math.round(_hScrollBar.value);
 				}
 			}
+			
 			createContentBg();
 		}
 		
@@ -135,7 +154,7 @@ package morn.core.components {
 		
 		public function set vScrollBarSkin(value:String):void {
 			if (_vScrollBar == null) {
-				super.addChild(_vScrollBar = new VScrollBar());
+				_vScrollBar = new VScrollBar();
 				_vScrollBar.addEventListener(Event.CHANGE, onScrollBarChange);
 				_vScrollBar.target = this;
 				callLater(changeScroll);
@@ -150,7 +169,7 @@ package morn.core.components {
 		
 		public function set hScrollBarSkin(value:String):void {
 			if (_hScrollBar == null) {
-				super.addChild(_hScrollBar = new HScrollBar());
+				_hScrollBar = new HScrollBar()
 				_hScrollBar.addEventListener(Event.CHANGE, onScrollBarChange);
 				_hScrollBar.target = this;
 				callLater(changeScroll);
@@ -173,14 +192,21 @@ package morn.core.components {
 			return _content;
 		}
 		
+		private var oldStart:int = 0;
 		protected function onScrollBarChange(e:Event):void {
-//			var rect:Rectangle = _content.scrollRect;
-//			if (rect) {
-//				var scroll:ScrollBar = e.currentTarget as ScrollBar;
-//				var start:int = Math.round(scroll.value);
-//				scroll.direction == ScrollBar.VERTICAL ? rect.y = start : rect.x = start;
-//				_content.scrollRect = rect;
-//			}
+			var rect:Rectangle = _content.clipRect;
+			if (rect) {
+				var scroll:ScrollBar = e.currentTarget as ScrollBar;
+				var start:int = Math.round(scroll.value);
+				if(start >= oldStart) {
+					scroll.direction == ScrollBar.VERTICAL ? _content.y -= (start - oldStart) : _content.x -= (start - oldStart);
+				} else {
+					scroll.direction == ScrollBar.VERTICAL ? _content.y -= (start - oldStart) : _content.x -= (start - oldStart);
+				}
+				oldStart = start;
+				//scroll.direction == ScrollBar.VERTICAL ? rect.y = start : rect.x = start;
+				//_content.clipRect = rect;
+			}
 		}
 		
 		override public function commitMeasure():void {

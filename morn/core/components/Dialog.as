@@ -3,12 +3,15 @@
  * Feedback yungzhu@gmail.com http://weibo.com/newyung
  */
 package morn.core.components {
-	import starling.display.DisplayObject;
-	
-	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
+	
 	import morn.core.handlers.Handler;
 	import morn.core.utils.StringUtils;
+	
+	import starling.display.DisplayObject;
+	import starling.events.Touch;
+	import starling.events.TouchEvent;
+	import starling.events.TouchPhase;
 	
 	/**对话框*/
 	public class Dialog extends View {
@@ -29,22 +32,49 @@ package morn.core.components {
 				dragArea = dragTarget.x + "," + dragTarget.y + "," + dragTarget.width + "," + dragTarget.height;
 				removeElement(dragTarget);
 			}
-			addEventListener(MouseEvent.CLICK, onClick);
+			dragTarget = getChildByName(CLOSE);
+			if (dragTarget) {
+				dragTarget.addEventListener(TouchEvent.TOUCH, onClick);
+			}
+			dragTarget = getChildByName(CANCEL);
+			if (dragTarget) {
+				dragTarget.addEventListener(TouchEvent.TOUCH, onClick);
+			}
+			dragTarget = getChildByName(SURE);
+			if (dragTarget) {
+				dragTarget.addEventListener(TouchEvent.TOUCH, onClick);
+			}
+			dragTarget = getChildByName(NO);
+			if (dragTarget) {
+				dragTarget.addEventListener(TouchEvent.TOUCH, onClick);
+			}
+			dragTarget = getChildByName(OK);
+			if (dragTarget) {
+				dragTarget.addEventListener(TouchEvent.TOUCH, onClick);
+			}
+			dragTarget = getChildByName(YES);
+			if (dragTarget) {
+				dragTarget.addEventListener(TouchEvent.TOUCH, onClick);
+			}
 		}
 		
 		/**默认按钮处理*/
-		protected function onClick(e:MouseEvent):void {
-			var btn:Button = e.target as Button;
-			if (btn) {
-				switch (btn.name) {
-					case CLOSE: 
-					case CANCEL: 
-					case SURE: 
-					case NO: 
-					case OK: 
-					case YES: 
-						close(btn.name);
-						break;
+		protected function onClick(e:TouchEvent):void {
+			var touch:Touch = e.getTouch(e.currentTarget as DisplayObject, TouchPhase.BEGAN);
+			if(touch)
+			{
+				var btn:Button = e.currentTarget as Button;
+				if (btn) {
+					switch (btn.name) {
+						case CLOSE: 
+						case CANCEL: 
+						case SURE: 
+						case NO: 
+						case OK: 
+						case YES: 
+							close(btn.name);
+							break;
+					}
 				}
 			}
 		}
@@ -52,6 +82,10 @@ package morn.core.components {
 		/**显示对话框(非模式窗口)
 		 * @param closeOther 是否关闭其他对话框*/
 		public function show(closeOther:Boolean = false):void {
+			addEventListener(TouchEvent.TOUCH, onMouseDown);
+			addEventListener(TouchEvent.TOUCH, onMouseMove);
+			addEventListener(TouchEvent.TOUCH, onMouseUp);
+			
 			App.dialog.show(this, closeOther);
 		}
 		
@@ -63,6 +97,10 @@ package morn.core.components {
 		
 		/**关闭对话框*/
 		public function close(type:String = null):void {
+			removeEventListener(TouchEvent.TOUCH, onMouseDown);
+			removeEventListener(TouchEvent.TOUCH, onMouseMove);
+			removeEventListener(TouchEvent.TOUCH, onMouseUp);
+			
 			App.dialog.close(this);
 			if (_closeHandler != null) {
 				_closeHandler.executeWith([type]);
@@ -78,17 +116,39 @@ package morn.core.components {
 			if (Boolean(value)) {
 				var a:Array = StringUtils.fillArray([0, 0, 0, 0], value);
 				_dragArea = new Rectangle(a[0], a[1], a[2], a[3]);
-				addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				
 			} else {
 				_dragArea = null;
-				removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			}
 		}
 		
-		private function onMouseDown(e:MouseEvent):void {
-//			if (_dragArea.contains(mouseX, mouseY)) {
-//				App.drag.doDrag(this);
-//			}
+		private var lastx:Number = 0;
+		private var lasty:Number = 0;
+		private function onMouseDown(e:TouchEvent):void {
+			var touch:Touch = e.getTouch(e.currentTarget as DisplayObject, TouchPhase.BEGAN);
+			if(touch) {
+				lastx = e.data[0].globalX;
+				lasty = e.data[0].globalY;
+			}
+		}
+		
+		private function onMouseMove(e:TouchEvent):void {
+			var touch:Touch = e.getTouch(e.currentTarget as DisplayObject, TouchPhase.MOVED);
+			if(touch) {
+				x += e.data[0].globalX - lastx;
+				y += e.data[0].globalY - lasty;
+				
+				lastx = e.data[0].globalX;
+				lasty = e.data[0].globalY;
+			}
+		}
+		
+		private function onMouseUp(e:TouchEvent):void {
+			var touch:Touch = e.getTouch(e.currentTarget as DisplayObject, TouchPhase.ENDED);
+			if(touch) {
+				lastx = 0;
+				lasty = 0;
+			}
 		}
 		
 		/**是否弹出*/

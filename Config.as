@@ -15,7 +15,7 @@ package {
 		/**资源路径*/
 		public static var resPath:String = "";
 		/**UI路径(UI加载模式可用)*/
-		public static var uiPath:String = "ui.swf";
+		public static var uiPath:String = "";
 		/**鼠标提示延迟(毫秒)*/
 		public static var tipDelay:int = 200;
 		/**提示是否跟随鼠标移动*/

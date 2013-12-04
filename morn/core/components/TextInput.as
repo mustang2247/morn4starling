@@ -5,8 +5,10 @@
 package morn.core.components {
 	import flash.events.KeyboardEvent;
 	import flash.events.TextEvent;
+	import flash.geom.Rectangle;
 	import flash.text.TextFieldType;
 	
+	import starling.core.Starling;
 	import starling.events.Event;
 	
 	/**当用户输入文本时调度*/
@@ -31,10 +33,21 @@ package morn.core.components {
 			_textField.needsSoftKeyboard = true;
 			_textField.requestSoftKeyboard();
 			super.initialize();
+			
+			addEventListener(Event.REMOVED_FROM_STAGE, onRemoveFromStage);
+			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
-		protected function onTextFieldChange(e:flash.events.Event):void {
-			text = _textField.text;
+		private function onAddedToStage(e:Event):void {
+			if(selectable) {
+				Starling.current.nativeOverlay.addChild(_textField);
+			}
+		}
+		
+		private function onRemoveFromStage(e:Event):void {
+			if(selectable) {
+				Starling.current.nativeOverlay.removeChild(_textField);
+			}
 		}
 		
 		/**指示用户可以输入到控件的字符集*/
@@ -44,6 +57,14 @@ package morn.core.components {
 		
 		public function set restrict(value:String):void {
 			_textField.restrict = value;
+		}
+		
+		override protected function changeSize():void {
+			if(parent != null) {
+				_textField.x = parent.x + x;
+				_textField.y = parent.y + y;
+			}
+			super.changeSize();
 		}
 		
 		/**是否可编辑*/

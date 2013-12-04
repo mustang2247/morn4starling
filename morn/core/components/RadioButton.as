@@ -34,7 +34,7 @@ package morn.core.components {
 		}
 		
 		override protected function changeLabelSize():void {
-			_btnLabel.width = _btnLabel.textField.textWidth + 5  + _btnLabel.format.letterSpacing + _bitmap.width;
+			_btnLabel.width = _btnLabel.textField.textWidth + 5 + _btnLabel.format.letterSpacing + _bitmap.width;
 			_btnLabel.height = _btnLabel.textField.textHeight + 5;
 			_btnLabel.x = _bitmap.width + _labelMargin[0];
 			_btnLabel.y = (_bitmap.height - _btnLabel.height) * 0.5 + _labelMargin[1];

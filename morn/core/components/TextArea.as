@@ -3,9 +3,13 @@
  * Feedback yungzhu@gmail.com http://weibo.com/newyung
  */
 package morn.core.components {
+	import flash.geom.Rectangle;
+	
 	import morn.core.events.UIEvent;
 	import morn.core.utils.ObjectUtils;
 	
+	import starling.core.Starling;
+	import starling.display.DisplayObject;
 	import starling.events.Event;
 	
 	/**当滚动内容时调用*/
@@ -25,7 +29,7 @@ package morn.core.components {
 		
 		override protected function createChildren():void {
 			super.createChildren();
-			addChild(_scrollBar = new VScrollBar());
+			_scrollBar = new VScrollBar();
 		}
 		
 		override protected function initialize():void {
@@ -41,12 +45,26 @@ package morn.core.components {
 		override protected function changeSize():void {
 			_textField.width = _width - _margin[0] - _margin[2];
 			_textField.height = _height - _margin[1] - _margin[3];
+			_textField.scrollRect = null;
+			if(parent != null) {
+				_textField.x = parent.x + x;
+				_textField.y = parent.y + y;
+			}
 			if (Boolean(_scrollBar.skin)) {
 				_textField.width = _textField.width - _scrollBar.width - 2;
 				_scrollBar.height = _height - _margin[1] - _margin[3];
-				_scrollBar.x = _width - _scrollBar.width - _margin[2];
+				//_scrollBar.x = _width - _scrollBar.width - _margin[2];
+				_scrollBar.x = _width - _margin[2];
 				_scrollBar.y = _margin[1];
 				App.timer.doFrameOnce(1, onTextFieldScroll, [null]);
+				
+				removeChild(_scrollBar);
+				reDraw();
+				if(_textField.scrollRect == null)
+				{
+					_textField.scrollRect = new Rectangle(0, 0, width, height);
+				}
+				addChild(_scrollBar);
 			}
 		}
 		
@@ -56,25 +74,29 @@ package morn.core.components {
 		}
 		
 		protected function onScrollBarChange(e:Object):void {
-			var scrollValue:int = _scrollBar.value / _lineHeight;
-			if (_textField.scrollV != scrollValue) {
-				_textField.removeEventListener(Event.SCROLL, onTextFieldScroll);
-				_textField.scrollV = scrollValue;
-				_textField.addEventListener(Event.SCROLL, onTextFieldScroll);
-				sendEvent(UIEvent.SCROLL);
-			}
+			var rect:Rectangle = _textField.scrollRect;
+			var start:int = Math.round(_scrollBar.value);
+			_scrollBar.direction == ScrollBar.VERTICAL ? rect.y = start : rect.x = start;
+			_textField.scrollRect = rect;
+			
+			removeChild(_scrollBar);
+			reDraw();
+			addChild(_scrollBar);
 		}
 		
 		protected function onTextFieldScroll(e:Object):void {
 			if (Boolean(_scrollBar.skin)) {
-				if (_textField.maxScrollV < 2) {
-					_scrollBar.visible = false;
-				} else {
+				if(_textField.textHeight > height)
+				{
 					_scrollBar.visible = true;
 					_scrollBar.target = this;
-					_scrollBar.thumbPercent = (_textField.numLines - _textField.maxScrollV + 1) / _textField.numLines;
-					_scrollBar.scrollSize = _lineHeight;
-					_scrollBar.setScroll(_lineHeight, _textField.maxScrollV * _lineHeight, _textField.scrollV * _lineHeight);
+					_scrollBar.scrollSize = height * 0.1;
+					_scrollBar.thumbPercent = height / textField.textHeight;
+					_scrollBar.setScroll(0, height, _scrollBar.value);
+				}
+				else
+				{
+					_scrollBar.visible = false;
 				}
 			}
 			sendEvent(UIEvent.SCROLL);

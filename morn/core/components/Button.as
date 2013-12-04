@@ -143,8 +143,8 @@ package morn.core.components {
 				var im:starling.display.Image = new starling.display.Image(tex);
 //				im.scaleX = width / _bitmap.width;
 //				im.scaleY = height / _bitmap.height;
-				im.width = width;
-				im.height = height;
+				im.width = _bitmap.bitmapData.width;
+				im.height = _bitmap.bitmapData.height;
 				addChild(im);
 			}
 			addChild(_btnLabel);

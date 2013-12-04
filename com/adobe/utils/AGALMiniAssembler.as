@@ -554,6 +554,7 @@ package com.adobe.utils
 		private static const SAMPLEMAP:Dictionary				= new Dictionary();
 		
 		private static const MAX_OPCODES:int					= 2048;
+		public static const MAX_TEXTURE_SIZE:int				= 2048;
 		
 		private static const FRAGMENT:String					= "fragment";
 		private static const VERTEX:String						= "vertex";

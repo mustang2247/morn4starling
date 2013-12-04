@@ -63,11 +63,6 @@ package morn.core.components {
 			_textField.selectable = false;
 			_textField.autoSize = TextFieldAutoSize.LEFT;
 			_bitmap.sizeGrid = [2, 2, 2, 2];
-			
-			if(_textField.type == TextFieldType.INPUT)
-			{
-				Starling.current.nativeStage.addChild(_textField);
-			}
 		}
 		
 		/**显示的文本*/
@@ -111,7 +106,7 @@ package morn.core.components {
 			{
 				if(_bitmap.clips != null)
 				{
-					var bitdata:BitmapData = new BitmapData(_bitmap.width, _bitmap.height, false);
+					var bitdata:BitmapData = new BitmapData(_bitmap.width, _bitmap.height, true, 0x0);
 					bitdata.draw(_bitmap.bitmapData);
 					var tex:Texture = Texture.fromBitmapData(bitdata);
 					bitdata.dispose();
@@ -121,23 +116,14 @@ package morn.core.components {
 					addChild(im);
 				}
 				
-				if(_textField.type == TextFieldType.INPUT)
+				if(_textField.type == TextFieldType.INPUT && selectable)
 				{
-					_textField.x += x;
-					_textField.y += y;
-					var par:Object = _textField.parent;
-					while(par != null)
-					{
-						_textField.x += par.x;
-						_textField.y += par.y;
-						
-						par = par.parent;
-					}
+					//
 				}
 				else
 				{
 					var bitmapData:BitmapData = new BitmapData(tempWidth, tempHeight, true, 0x0);
-					bitmapData.draw(_textField);
+					bitmapData.draw(_textField, null, null, null, new Rectangle(0, 0, tempWidth, tempHeight));
 					var texture:Texture = Texture.fromBitmapData(bitmapData, false, false, scale);
 					bitmapData.dispose();
 					var mImage:starling.display.Image = new starling.display.Image(texture);
