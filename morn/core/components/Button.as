@@ -40,6 +40,7 @@ package morn.core.components {
 		public function Button(skin:String = null, label:String = "") {
 			this.skin = skin;
 			this.label = label;
+			addEventListener(TouchEvent.TOUCH, onMouse);
 		}
 		
 		override protected function createChildren():void {
@@ -132,7 +133,6 @@ package morn.core.components {
 		
 		override public function reDraw():void {
 			//画到场景里
-			removeEventListener(TouchEvent.TOUCH, onMouse);
 			removeChildren(0, -1, true);
 			if(_bitmap.clips != null)
 			{
@@ -141,14 +141,11 @@ package morn.core.components {
 				var tex:Texture = Texture.fromBitmapData(bitdata);
 				bitdata.dispose();
 				var im:starling.display.Image = new starling.display.Image(tex);
-//				im.scaleX = width / _bitmap.width;
-//				im.scaleY = height / _bitmap.height;
 				im.width = _bitmap.bitmapData.width;
 				im.height = _bitmap.bitmapData.height;
 				addChild(im);
 			}
 			addChild(_btnLabel);
-			addEventListener(TouchEvent.TOUCH, onMouse);
 		}
 		
 		/**是否是选择状态*/
@@ -169,14 +166,14 @@ package morn.core.components {
 		
 		protected function set state(value:int):void {
 			_state = value;
-			callLater(changeState);
+			changeState();
 		}
 		
 		protected function changeState():void {
 			_bitmap.index = _state;
 			_btnLabel.color = _labelColors[_state];
 			
-			reDraw();
+			callLater(reDraw);
 		}
 		
 		/**是否是切换状态*/
@@ -192,7 +189,7 @@ package morn.core.components {
 			if (_disabled != value) {
 				super.disabled = value;
 				state = _selected ? stateMap["selected"] : stateMap["rollOut"];
-				ObjectUtils.gray(this, _disabled);
+				//ObjectUtils.gray(this, _disabled);
 			}
 		}
 		

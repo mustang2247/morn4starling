@@ -5,10 +5,12 @@
 package morn.core.components {
 	import flash.geom.Rectangle;
 	
+	import morn.core.events.UIEvent;
 	import morn.core.handlers.Handler;
 	import morn.core.utils.StringUtils;
 	
 	import starling.display.DisplayObject;
+	import starling.display.DisplayObjectContainer;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
@@ -55,6 +57,22 @@ package morn.core.components {
 			dragTarget = getChildByName(YES);
 			if (dragTarget) {
 				dragTarget.addEventListener(TouchEvent.TOUCH, onClick);
+			}
+			
+			addEventListener(UIEvent.MOVE, onMoving);
+		}
+		
+		private function onMoving(e:UIEvent):void {
+			var container:DisplayObjectContainer = this as DisplayObjectContainer;
+			if(container) {
+				var child:DisplayObject = null;
+				var numChildren:int = container.numChildren;
+				for (var i:int = 0; i < numChildren; ++i) {
+					child = getChildAt(i);
+					if(child) {
+						child.dispatchEvent(e);
+					}
+				}
 			}
 		}
 		
@@ -125,6 +143,10 @@ package morn.core.components {
 		private var lastx:Number = 0;
 		private var lasty:Number = 0;
 		private function onMouseDown(e:TouchEvent):void {
+			if(e.currentTarget != this) {
+				return;
+			}
+			
 			var touch:Touch = e.getTouch(e.currentTarget as DisplayObject, TouchPhase.BEGAN);
 			if(touch) {
 				lastx = e.data[0].globalX;
@@ -133,6 +155,10 @@ package morn.core.components {
 		}
 		
 		private function onMouseMove(e:TouchEvent):void {
+			if(e.currentTarget != this) {
+				return;
+			}
+			
 			var touch:Touch = e.getTouch(e.currentTarget as DisplayObject, TouchPhase.MOVED);
 			if(touch) {
 				x += e.data[0].globalX - lastx;
@@ -144,6 +170,10 @@ package morn.core.components {
 		}
 		
 		private function onMouseUp(e:TouchEvent):void {
+			if(e.currentTarget != this) {
+				return;
+			}
+			
 			var touch:Touch = e.getTouch(e.currentTarget as DisplayObject, TouchPhase.ENDED);
 			if(touch) {
 				lastx = 0;

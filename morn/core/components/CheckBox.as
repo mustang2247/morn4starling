@@ -46,19 +46,17 @@ package morn.core.components {
 			if(_btnLabel.width > 0 && _btnLabel.height > 0)
 			{
 				//画到场景里
-				removeEventListener(TouchEvent.TOUCH, onMouse);
 				removeChildren(0, -1, true);
 				if(_bitmap.clips != null)
 				{
 					var bitdata:BitmapData = new BitmapData(_btnLabel.width + _bitmap.width, _btnLabel.height, true, 0x0);
-					bitdata.draw(_bitmap);
+					bitdata.draw(_bitmap.clips[_bitmap.index]);
 					var tex:Texture = Texture.fromBitmapData(bitdata);
 					bitdata.dispose();
 					var im:starling.display.Image = new starling.display.Image(tex);
 					addChild(im);
 				}
 				addChild(_btnLabel);
-				addEventListener(TouchEvent.TOUCH, onMouse);
 			}
 		}
 		

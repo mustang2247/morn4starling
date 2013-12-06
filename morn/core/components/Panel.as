@@ -8,6 +8,7 @@ package morn.core.components {
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 	
+	import morn.core.events.UIEvent;
 	import morn.editor.core.IContent;
 	
 	import starling.display.DisplayObject;
@@ -26,6 +27,7 @@ package morn.core.components {
 		public function Panel() {
 			width = height = 100;
 			addEventListener(Event.ADDED, onAdded);
+			addEventListener(UIEvent.MOVE, onMoving);
 		}
 		
 		override protected function onAdded(e:Event):void {
@@ -34,7 +36,17 @@ package morn.core.components {
 			_content.y = y;
 			parent.addChild(_content);
 			
-			parent.addChild(_vScrollBar);
+			if(_vScrollBar != null) {
+				parent.addChild(_vScrollBar);
+			}
+			
+			if(_hScrollBar != null) {
+				parent.addChild(_hScrollBar);
+			}
+		}
+		
+		private function onMoving(e:UIEvent):void {
+			callLater(changeScroll);
 		}
 		
 		override protected function createChildren():void {
@@ -101,7 +113,11 @@ package morn.core.components {
 			if (_vScrollBar) {
 				_vScrollBar.visible = _content.height > _height;
 				if (_vScrollBar.visible) {
-					_content.clipRect = new Rectangle(parent.x + x, parent.y + y, contentWidth, contentHeight);
+					if(_content.clipRect == null) {
+						_content.clipRect = new Rectangle(parent.x + x, parent.y + y, contentWidth, contentHeight);
+					}
+					_content.clipRect.x = parent.x + x;
+					_content.clipRect.y = parent.y + y;
 					_vScrollBar.x = x + contentWidth;
 					_vScrollBar.y = y;
 					_vScrollBar.height = _height - (hShow ? _hScrollBar.height : 0);
@@ -115,7 +131,11 @@ package morn.core.components {
 			if (_hScrollBar) {
 				_hScrollBar.visible = _content.width > _width;
 				if (_hScrollBar.visible) {
-					_content.clipRect = new Rectangle(parent.x + x, parent.y + y, contentWidth, contentHeight);
+					if(_content.clipRect == null) {
+						_content.clipRect = new Rectangle(parent.x + x, parent.y + y, contentWidth, contentHeight);
+					}
+					_content.clipRect.x = parent.x + x;
+					_content.clipRect.y = parent.y + y;
 					_hScrollBar.x = x;
 					_hScrollBar.y = y + contentHeight;
 					_hScrollBar.width = _width - (vShow ? _vScrollBar.width : 0);
@@ -204,8 +224,6 @@ package morn.core.components {
 					scroll.direction == ScrollBar.VERTICAL ? _content.y -= (start - oldStart) : _content.x -= (start - oldStart);
 				}
 				oldStart = start;
-				//scroll.direction == ScrollBar.VERTICAL ? rect.y = start : rect.x = start;
-				//_content.clipRect = rect;
 			}
 		}
 		

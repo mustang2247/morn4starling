@@ -62,8 +62,8 @@ package morn.core.components {
 			var touch:Touch = e.getTouch(e.currentTarget as DisplayObject, TouchPhase.BEGAN);
 			if(touch)
 			{
-				App.stage.addEventListener(TouchEvent.TOUCH, onStageMouseUp);
-				App.stage.addEventListener(TouchEvent.TOUCH, onStageMouseMove);
+				addEventListener(TouchEvent.TOUCH, onStageMouseUp);
+				addEventListener(TouchEvent.TOUCH, onStageMouseMove);
 				if (_direction == VERTICAL) {
 					_oldPos = e.data[0].globalY;
 				} else {
@@ -74,6 +74,8 @@ package morn.core.components {
 				showValueText();
 				
 				_bMouseDown = true;
+				
+				e.stopImmediatePropagation();
 			}
 		}
 		
@@ -102,14 +104,16 @@ package morn.core.components {
 			var touch:Touch = e.getTouch(e.currentTarget as DisplayObject, TouchPhase.ENDED);
 			if(touch)
 			{
-				App.stage.removeEventListener(TouchEvent.TOUCH, onStageMouseUp);
-				App.stage.removeEventListener(TouchEvent.TOUCH, onStageMouseMove);
+				removeEventListener(TouchEvent.TOUCH, onStageMouseUp);
+				removeEventListener(TouchEvent.TOUCH, onStageMouseMove);
 				
 				hideValueText();
 				
 				_oldPos = 0;
 				
 				_bMouseDown = false;
+				
+				e.stopImmediatePropagation();
 			}
 		}
 		
@@ -173,6 +177,8 @@ package morn.core.components {
 					showValueText();
 					sendChangeEvent();
 				}
+				
+				e.stopImmediatePropagation();
 			}
 		}
 		

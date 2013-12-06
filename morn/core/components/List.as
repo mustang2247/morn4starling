@@ -186,23 +186,23 @@ package morn.core.components {
 		
 		/**设置可视区域大小*/
 		public function setContentSize(widht:Number, height:Number):void {
-//			var shape:Shape = new Shape();
-//			var g:Graphics = shape.graphics;
-//			g.clear();
-//			g.beginFill(0x000000, 0);
-//			g.drawRect(0, 0, widht, height);
-//			g.endFill();
-//			var bitdata:BitmapData = new BitmapData(width, height);
-//			bitdata.draw(shape);
-//			shape = null;
-//			var tex:Texture = Texture.fromBitmapData(bitdata);
-//			bitdata.dispose();
-//			var im:starling.display.Image = new starling.display.Image(tex);
-//			im.touchable = false;
-//			_content.addChildAt(im, 0);
+			var shape:Shape = new Shape();
+			var g:Graphics = shape.graphics;
+			g.clear();
+			g.beginFill(0x000000, 0);
+			g.drawRect(0, 0, widht, height);
+			g.endFill();
+			var bitdata:BitmapData = new BitmapData(width, height);
+			bitdata.draw(shape);
+			shape = null;
+			var tex:Texture = Texture.fromBitmapData(bitdata);
+			bitdata.dispose();
+			var im:starling.display.Image = new starling.display.Image(tex);
+			im.touchable = true;
+			_content.addChildAt(im, 0);
 			_content.width = widht;
 			_content.height = height;
-//			_content.scrollRect = new Rectangle(0, 0, widht, height);
+			//_content.clipRect = new Rectangle(0, 0, widht, height);
 		}
 		
 		protected function onCellMouse(e:TouchEvent):void {

@@ -8,7 +8,10 @@ package morn.core.components {
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldType;
 	
+	import morn.core.events.UIEvent;
+	
 	import starling.core.Starling;
+	import starling.display.DisplayObject;
 	import starling.events.Event;
 	
 	/**当用户输入文本时调度*/
@@ -36,16 +39,21 @@ package morn.core.components {
 			
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemoveFromStage);
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			addEventListener(UIEvent.MOVE, onMoving);
+		}
+		
+		private function onMoving(e:UIEvent):void {
+			callLater(changeSize);
 		}
 		
 		private function onAddedToStage(e:Event):void {
-			if(selectable) {
+			if(editable) {
 				Starling.current.nativeOverlay.addChild(_textField);
 			}
 		}
 		
 		private function onRemoveFromStage(e:Event):void {
-			if(selectable) {
+			if(editable) {
 				Starling.current.nativeOverlay.removeChild(_textField);
 			}
 		}
@@ -60,9 +68,14 @@ package morn.core.components {
 		}
 		
 		override protected function changeSize():void {
-			if(parent != null) {
-				_textField.x = parent.x + x;
-				_textField.y = parent.y + y;
+			_textField.x = x;
+			_textField.y = y;
+			var parentObj:DisplayObject = parent;
+			while(parentObj) {
+				_textField.x += parentObj.x;
+				_textField.y += parentObj.y;
+				
+				parentObj = parentObj.parent;
 			}
 			super.changeSize();
 		}

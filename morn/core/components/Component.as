@@ -256,7 +256,7 @@ package morn.core.components {
 				_disabled = value;
 				//mouseEnabled = !value;
 				//super.mouseChildren = value ? false : _mouseChildren;
-				ObjectUtils.gray(this, _disabled);
+				//ObjectUtils.gray(this, _disabled);
 			}
 		}
 		
@@ -278,18 +278,17 @@ package morn.core.components {
 		/**显示边框*/
 		public function showBorder(color:uint = 0xff0000):void {
 			removeChildByName("border");
-			var dnamicClassDraw:RenderTexture = new RenderTexture(5, 5);
 			var border:Shape = new Shape();
 			border.name = "border";
 			border.graphics.lineStyle(1, color);
 			border.graphics.drawRect(0, 0, width, height);
-			var bitdata:BitmapData = new BitmapData(border.width, border.height);
+			var bitdata:BitmapData = new BitmapData(border.width, border.height, true, 0x0);
 			bitdata.draw(border);
 			var tex:Texture = Texture.fromBitmapData(bitdata);
+			bitdata.dispose();
 			var im:starling.display.Image = new starling.display.Image(tex);
-			dnamicClassDraw.draw(im);
-			var conImg:starling.display.Image = new starling.display.Image(dnamicClassDraw);
-			addChild(conImg);
+			im.touchable = false;
+			addChild(im);
 		}
 		
 		/**组件xml结构(高级用法：动态更改XML，然后通过页面重新渲染)*/

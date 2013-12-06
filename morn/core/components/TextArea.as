@@ -53,7 +53,6 @@ package morn.core.components {
 			if (Boolean(_scrollBar.skin)) {
 				_textField.width = _textField.width - _scrollBar.width - 2;
 				_scrollBar.height = _height - _margin[1] - _margin[3];
-				//_scrollBar.x = _width - _scrollBar.width - _margin[2];
 				_scrollBar.x = _width - _margin[2];
 				_scrollBar.y = _margin[1];
 				App.timer.doFrameOnce(1, onTextFieldScroll, [null]);

@@ -116,9 +116,9 @@ package morn.core.components {
 					addChild(im);
 				}
 				
-				if(_textField.type == TextFieldType.INPUT && selectable)
+				if(_textField.type == TextFieldType.INPUT)
 				{
-					//
+					//trace("input");
 				}
 				else
 				{
