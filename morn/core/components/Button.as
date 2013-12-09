@@ -173,7 +173,7 @@ package morn.core.components {
 			_bitmap.index = _state;
 			_btnLabel.color = _labelColors[_state];
 			
-			callLater(reDraw);
+			callLater(changeLabelSize);
 		}
 		
 		/**是否是切换状态*/

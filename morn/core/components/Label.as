@@ -25,6 +25,7 @@ package morn.core.components {
 	import starling.events.KeyboardEvent;
 	import starling.events.TouchEvent;
 	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
 	
 	/**文本发生改变后触发*/
 	[Event(name="change",type="starling.events.Event")]
@@ -128,6 +129,7 @@ package morn.core.components {
 					bitmapData.dispose();
 					var mImage:starling.display.Image = new starling.display.Image(texture);
 					mImage.touchable = true;
+					mImage.smoothing = TextureSmoothing.NONE;
 					addChild(mImage);
 				}
 			}
