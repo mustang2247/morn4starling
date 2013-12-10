@@ -12,6 +12,7 @@ package morn.core.utils {
 	import flash.utils.ByteArray;
 	
 	import starling.display.DisplayObject;
+	import starling.filters.ColorMatrixFilter;
 	import starling.filters.FragmentFilter;
 	
 	/**对象工具集*/
@@ -69,14 +70,16 @@ package morn.core.utils {
 			bytes.writeObject(obj);
 			return bytes;
 		}
-		private static const grayFilter:ColorMatrixFilter = new ColorMatrixFilter([0.3086, 0.6094, 0.082, 0, 0, 0.3086, 0.6094, 0.082, 0, 0, 0.3086, 0.6094, 0.082, 0, 0, 0, 0, 0, 1, 0]);
+		private static const grayFilter:starling.filters.ColorMatrixFilter = new starling.filters.ColorMatrixFilter(new <Number>[0.3086, 0.6094, 0.082, 0, 0, 0.3086, 0.6094, 0.082, 0, 0, 0.3086, 0.6094, 0.082, 0, 0, 0, 0, 0, 1, 0]);
 		
 		/**让显示对象变成灰色*/
 		public static function gray(traget:DisplayObject, isGray:Boolean = true):void {
 			if (isGray) {
-				addFilter(traget, grayFilter);
+				//addFilter(traget, grayFilter);
+				traget.filter = grayFilter;
 			} else {
-				clearFilter(traget, ColorMatrixFilter);
+				//clearFilter(traget, ColorMatrixFilter);
+				traget.filter = null;
 			}
 		}
 		

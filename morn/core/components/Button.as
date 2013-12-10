@@ -189,7 +189,7 @@ package morn.core.components {
 			if (_disabled != value) {
 				super.disabled = value;
 				state = _selected ? stateMap["selected"] : stateMap["rollOut"];
-				//ObjectUtils.gray(this, _disabled);
+				ObjectUtils.gray(this, _disabled);
 			}
 		}
 		

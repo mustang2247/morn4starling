@@ -256,7 +256,7 @@ package morn.core.components {
 				_disabled = value;
 				//mouseEnabled = !value;
 				//super.mouseChildren = value ? false : _mouseChildren;
-				//ObjectUtils.gray(this, _disabled);
+				ObjectUtils.gray(this, _disabled);
 			}
 		}
 		
