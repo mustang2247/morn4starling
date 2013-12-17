@@ -7,13 +7,16 @@ package starling.extensions
     import flash.geom.Point;
     import flash.geom.Rectangle;
     
+    import morn.core.components.Component;
+    
     import starling.core.RenderSupport;
     import starling.core.Starling;
     import starling.display.DisplayObject;
     import starling.display.Sprite;
     import starling.errors.MissingContextError;
     
-    public class ClippedSprite extends Sprite
+    //public class ClippedSprite extends Sprite
+	public class ClippedSprite extends Component
     {
         private var mClipRect:Rectangle;
         

@@ -600,7 +600,7 @@ package starling.core
 		
 		private function onMouseWheel(e:MouseEvent):void
 		{
-			mStage.broadcastEvent(new WheelEvent(WheelEvent.MOUSEWHEEL, false, e.delta));
+			mStage.dispatchEvent(new WheelEvent(WheelEvent.MOUSEWHEEL, false, e.delta, e.stageX, e.stageY));
 		}
         
         private function onTouch(event:Event):void

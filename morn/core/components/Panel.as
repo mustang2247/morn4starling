@@ -124,6 +124,7 @@ package morn.core.components {
 					_vScrollBar.scrollSize = _content.height * 0.1;
 					_vScrollBar.thumbPercent = contentHeight / _content.height;
 					_vScrollBar.setScroll(0, _content.height - contentHeight, _vScrollBar.value);
+					_vScrollBar.target = _content;
 					
 					oldStart = Math.round(_vScrollBar.value);
 				}
@@ -141,6 +142,7 @@ package morn.core.components {
 					_hScrollBar.width = _width - (vShow ? _vScrollBar.width : 0);
 					_hScrollBar.thumbPercent = contentWidth / _content.width;
 					_hScrollBar.setScroll(0, _content.width - contentWidth, _hScrollBar.value);
+					_hScrollBar.target = _content;
 					
 					oldStart = Math.round(_hScrollBar.value);
 				}

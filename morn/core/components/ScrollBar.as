@@ -7,6 +7,7 @@ package morn.core.components {
 	
 	import morn.core.handlers.Handler;
 	
+	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.events.Event;
 	import starling.events.Touch;
@@ -239,12 +240,12 @@ package morn.core.components {
 		
 		public function set target(value:Component):void {
 			if (_target) {
-				_target.removeEventListener(WheelEvent.MOUSEWHEEL, onMouseWheel);
+				App.stage.removeEventListener(WheelEvent.MOUSEWHEEL, onMouseWheel);
 				_target.removeEventListener(TouchEvent.TOUCH, onTargetMouseDown);
 			}
 			_target = value;
 			if (value) {
-				_target.addEventListener(WheelEvent.MOUSEWHEEL, onMouseWheel);
+				App.stage.addEventListener(WheelEvent.MOUSEWHEEL, onMouseWheel);
 				if (_touchScrollEnable) {
 					_target.addEventListener(TouchEvent.TOUCH, onTargetMouseDown);
 				}
@@ -278,7 +279,7 @@ package morn.core.components {
 		
 		protected function onStageEnterFrame(e:TouchEvent):void {
 			if(_bMouseDown) {
-				_lastOffset = _slider.direction == VERTICAL ? e.data[0].globalX - _lastPoint.y : e.data[0].globalX - _lastPoint.x;
+				_lastOffset = _slider.direction == VERTICAL ? e.data[0].globalY - _lastPoint.y : e.data[0].globalX - _lastPoint.x;
 				if (Math.abs(_lastOffset) >= 1) {
 					_lastPoint.x = e.data[0].globalX;
 					_lastPoint.y = e.data[0].globalY;
@@ -313,9 +314,24 @@ package morn.core.components {
 		}
 		
 		protected function onMouseWheel(e:WheelEvent):void {
-			value += (e.delta < 0 ? 1 : -1) * _thumbPercent * (max - min);
-			if (value < max && value > min) {
-				e.stopPropagation();
+			var p:Point = new Point(e.x, e.y);
+			var disObj:starling.display.DisplayObject = Starling.current.stage.hitTest(p, true);
+			while(disObj)
+			{
+				if(disObj == _target)
+				{
+					break;
+				}
+				
+				disObj = disObj.parent;
+			}
+			p = null;
+			
+			if(disObj && disObj == _target) {
+				value += (e.delta < 0 ? 1 : -1) * _thumbPercent * (max - min);
+				if (value < max && value > min) {
+					e.stopPropagation();
+				}
 			}
 		}
 	}
