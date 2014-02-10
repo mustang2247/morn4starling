@@ -68,6 +68,7 @@ package morn.core.components {
 		
 		/**显示的文本*/
 		public function get text():String {
+			_isHtml ? _text = App.lang.getLang(_textField.htmlText) : _text = App.lang.getLang(_textField.text);
 			return _text;
 		}
 		
