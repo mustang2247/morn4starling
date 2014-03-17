@@ -19,6 +19,7 @@ package morn.core.components {
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
 	
 	/**选择改变后触发*/
 	[Event(name="select",type="starling.events.Event")]
@@ -36,6 +37,9 @@ package morn.core.components {
 		protected var _selected:Boolean;
 		protected var _skin:String;
 		protected var _autoSize:Boolean = true;
+		
+		protected var _texture:Texture = null;
+		protected var _bgImg:starling.display.Image = null;
 		
 		public function Button(skin:String = null, label:String = "") {
 			this.skin = skin;
@@ -133,19 +137,36 @@ package morn.core.components {
 		
 		override public function reDraw():void {
 			//画到场景里
-			removeChildren(0, -1, true);
+			removeAll();
 			if(_bitmap.clips != null)
 			{
 				var bitdata:BitmapData = new BitmapData(_bitmap.bitmapData.width, _bitmap.bitmapData.height, true, 0x0);
 				bitdata.draw(_bitmap.bitmapData);
-				var tex:Texture = Texture.fromBitmapData(bitdata);
+				_texture = Texture.fromBitmapData(bitdata);
 				bitdata.dispose();
-				var im:starling.display.Image = new starling.display.Image(tex);
-				im.width = _bitmap.bitmapData.width;
-				im.height = _bitmap.bitmapData.height;
-				addChild(im);
+				_bgImg = new starling.display.Image(_texture);
+				_bgImg.width = _bitmap.bitmapData.width;
+				_bgImg.height = _bitmap.bitmapData.height;
+				_bgImg.smoothing = TextureSmoothing.NONE;
+				addChild(_bgImg);
 			}
+			_btnLabel.reDraw();
 			addChild(_btnLabel);
+		}
+		
+		override public function removeAll():void {
+			if(_texture != null)
+			{
+				_texture.dispose();
+				_texture = null;
+			}
+			if(_bgImg != null)
+			{
+				_bgImg.dispose();
+				_bgImg = null;
+			}
+			_btnLabel.removeAll();
+			removeChildren(0, -1, true);
 		}
 		
 		/**是否是选择状态*/

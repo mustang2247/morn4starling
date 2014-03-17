@@ -14,6 +14,7 @@ package morn.core.components {
 	import starling.display.Image;
 	import starling.events.Event;
 	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
 	
 	/**图片加载后触发*/
 	[Event(name="imageLoaded",type="morn.core.events.UIEvent")]
@@ -35,6 +36,9 @@ package morn.core.components {
 		protected var _to:int = -1;
 		protected var _complete:Handler;
 		protected var _isPlaying:Boolean;
+		
+		protected var _backTexture:Texture = null;
+		protected var _backImg:starling.display.Image = null;
 		
 		/**位图切片
 		 * @param url 资源类库名或者地址
@@ -318,21 +322,34 @@ package morn.core.components {
 		}
 		
 		override public function reDraw():void {
-			removeChildren(0, -1, true);
-			App.asset.destroyClips(_url);
-			App.loader.clearResLoaded(_url);
+			removeAll();
 			
 			if(_bitmap.clips != null)
 			{	
 				var bitdata:BitmapData = new BitmapData(_bitmap.clips[_bitmap.index].width, _bitmap.clips[_bitmap.index].height, true, 0x0);
 				bitdata.draw(_bitmap);
-				var tex:Texture = Texture.fromBitmapData(bitdata);
+				_backTexture = Texture.fromBitmapData(bitdata);
 				bitdata.dispose();
-				var im:starling.display.Image = new starling.display.Image(tex);
-				im.scaleX = width / _bitmap.clips[_bitmap.index].width;
-				im.scaleY = height / _bitmap.clips[_bitmap.index].height;
-				addChild(im);
+				_backImg = new starling.display.Image(_backTexture);
+				_backImg.scaleX = width / _bitmap.clips[_bitmap.index].width;
+				_backImg.scaleY = height / _bitmap.clips[_bitmap.index].height;
+				_backImg.smoothing = TextureSmoothing.NONE;
+				addChild(_backImg);
 			}
+		}
+		
+		override public function removeAll():void {
+			if(_backTexture != null){
+				_backTexture.dispose();
+				_backTexture = null;
+			}
+			if(_backImg != null){
+				_backImg.dispose();
+				_backImg = null;
+			}
+			removeChildren(0, -1, true);
+			App.asset.destroyClips(_url);
+			App.loader.clearResLoaded(_url);
 		}
 		
 		/**销毁资源

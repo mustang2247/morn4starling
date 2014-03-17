@@ -379,5 +379,9 @@ package morn.core.components {
 		public function reDraw():void {
 			
 		}
+		
+		public function removeAll():void {
+			
+		}
 	}
 }

@@ -8,15 +8,19 @@ package morn.core.components {
 	import morn.core.utils.ObjectUtils;
 	
 	import starling.display.Image;
+	import starling.events.Event;
 	import starling.events.TouchEvent;
 	import starling.textures.Texture;
-	import starling.events.Event;
+	import starling.textures.TextureSmoothing;
 	
 	/**多选按钮*/
 	public class CheckBox extends Button {
 		
 		private var offsetx:Number = 5;
 		private var offsety:Number = 5;
+		
+		private var _backTexture:Texture = null;
+		private var _backImg:starling.display.Image = null;
 		
 		public function CheckBox(skin:String = null, label:String = "") {
 			super(skin, label);
@@ -46,18 +50,36 @@ package morn.core.components {
 			if(_btnLabel.width > 0 && _btnLabel.height > 0)
 			{
 				//画到场景里
-				removeChildren(0, -1, true);
+				removeAll();
+				
 				if(_bitmap.clips != null)
 				{
 					var bitdata:BitmapData = new BitmapData(_btnLabel.width + _bitmap.width, _btnLabel.height, true, 0x0);
 					bitdata.draw(_bitmap.clips[_bitmap.index]);
-					var tex:Texture = Texture.fromBitmapData(bitdata);
+					_backTexture = Texture.fromBitmapData(bitdata);
 					bitdata.dispose();
-					var im:starling.display.Image = new starling.display.Image(tex);
-					addChild(im);
+					_backImg = new starling.display.Image(_backTexture);
+					_backImg.smoothing = TextureSmoothing.NONE;
+					addChild(_backImg);
 				}
+				_btnLabel.reDraw();
 				addChild(_btnLabel);
 			}
+		}
+		
+		override public function removeAll():void {
+			if(_backTexture != null){
+				_backTexture.dispose();
+				_backTexture = null;
+			}
+			if(_backImg != null){
+				_backImg.dispose();
+				_backImg = null;
+			}
+			if(_btnLabel != null){
+				_btnLabel.removeAll();
+			}
+			removeChildren(0, -1, true);
 		}
 		
 		override public function commitMeasure():void {

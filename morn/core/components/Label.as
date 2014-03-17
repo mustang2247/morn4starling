@@ -41,6 +41,12 @@ package morn.core.components {
 		protected var _bitmap:AutoBitmap;
 		protected var _margin:Array = [0, 0, 0, 0];
 		
+		protected var _bgTexture:Texture = null;
+		protected var _bgImg:starling.display.Image = null;
+		
+		protected var _textTexture:Texture = null;
+		protected var _textImg:starling.display.Image = null;
+		
 		public function Label(text:String = "", skin:String = null) {
 			this.text = text;
 			this.skin = skin;
@@ -92,7 +98,8 @@ package morn.core.components {
 		
 		override public function reDraw():void {
 			//画到场景里
-			removeChildren(0, -1, true);
+			removeAll();
+			
 			var tempWidth:Number = width;
 			if(tempWidth == 0)
 			{
@@ -110,12 +117,13 @@ package morn.core.components {
 				{
 					var bitdata:BitmapData = new BitmapData(_bitmap.width, _bitmap.height, true, 0x0);
 					bitdata.draw(_bitmap.bitmapData);
-					var tex:Texture = Texture.fromBitmapData(bitdata);
+					_bgTexture = Texture.fromBitmapData(bitdata);
 					bitdata.dispose();
-					var im:starling.display.Image = new starling.display.Image(tex);
-					im.scaleX = tempWidth / _bitmap.bitmapData.width;
-					im.scaleY = tempHeight / _bitmap.bitmapData.height;
-					addChild(im);
+					_bgImg = new starling.display.Image(_bgTexture);
+					_bgImg.scaleX = tempWidth / _bitmap.bitmapData.width;
+					_bgImg.scaleY = tempHeight / _bitmap.bitmapData.height;
+					_bgImg.smoothing = TextureSmoothing.NONE;
+					addChild(_bgImg);
 				}
 				
 				if(_textField.type == TextFieldType.INPUT)
@@ -126,14 +134,34 @@ package morn.core.components {
 				{
 					var bitmapData:BitmapData = new BitmapData(tempWidth, tempHeight, true, 0x0);
 					bitmapData.draw(_textField, null, null, null, new Rectangle(0, 0, tempWidth, tempHeight));
-					var texture:Texture = Texture.fromBitmapData(bitmapData, false, false, scale);
+					_textTexture = Texture.fromBitmapData(bitmapData, false, false, scale);
 					bitmapData.dispose();
-					var mImage:starling.display.Image = new starling.display.Image(texture);
-					mImage.touchable = true;
-					mImage.smoothing = TextureSmoothing.NONE;
-					addChild(mImage);
+					_textImg = new starling.display.Image(_textTexture);
+					_textImg.touchable = true;
+					_textImg.smoothing = TextureSmoothing.NONE;
+					addChild(_textImg);
 				}
 			}
+		}
+		
+		override public function removeAll():void {
+			if(_bgTexture != null){
+				_bgTexture.dispose();
+				_bgTexture = null;
+			}
+			if(_bgImg != null){
+				_bgImg.dispose();
+				_bgImg = null;
+			}
+			if(_textTexture != null) {
+				_textTexture.dispose();
+				_textTexture = null;
+			}
+			if(_textImg != null){
+				_textImg.dispose();
+				_textImg = null;
+			}
+			removeChildren(0, -1, true);
 		}
 		
 		override protected function changeSize():void {

@@ -25,6 +25,9 @@ package morn.core.components {
 		protected var _bitmap:AutoBitmap;
 		protected var _url:String;
 		
+		protected var _mainTexture:Texture = null;
+		protected var _mainImg:starling.display.Image = null;
+		
 		public function Image(url:String = null) {
 			this.url = url;
 		}
@@ -78,8 +81,8 @@ package morn.core.components {
 		
 		override public function reDraw():void {
 			//画到场景里
-			App.loader.clearResLoaded(_url);
-			removeChildren(0, -1, true);
+			removeAll();
+			
 			if(_bitmap.clips != null)
 			{
 				if(_bitmap.bitmapData.width >= AGALMiniAssembler.MAX_TEXTURE_SIZE || _bitmap.bitmapData.height >= AGALMiniAssembler.MAX_TEXTURE_SIZE) {
@@ -127,14 +130,27 @@ package morn.core.components {
 					im3.y = height / 2;
 					addChild(im3);
 				} else {
-					var tex:Texture = Texture.fromBitmapData(_bitmap.bitmapData);
-					var im:starling.display.Image = new starling.display.Image(tex);
-					im.width = width;
-					im.height = height;
-					im.smoothing = TextureSmoothing.NONE;
-					addChild(im);
+					_mainTexture = Texture.fromBitmapData(_bitmap.bitmapData);
+					_mainImg = new starling.display.Image(_mainTexture);
+					_mainImg.width = width;
+					_mainImg.height = height;
+					_mainImg.smoothing = TextureSmoothing.NONE;
+					addChild(_mainImg);
 				}
 			}
+		}
+		
+		override public function removeAll():void {
+			if(_mainTexture != null){
+				_mainTexture.dispose();
+				_mainTexture = null;
+			}
+			if(_mainImg != null){
+				_mainImg.dispose();
+				_mainImg = null;
+			}
+			App.loader.clearResLoaded(_url);
+			removeChildren(0, -1, true);
 		}
 		
 		override public function set width(value:Number):void {
