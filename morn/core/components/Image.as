@@ -15,6 +15,7 @@ package morn.core.components {
 	
 	import starling.display.Image;
 	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
 	
 	/**图片被加载后触发*/
 	[Event(name="imageLoaded",type="morn.core.events.UIEvent")]
@@ -130,6 +131,7 @@ package morn.core.components {
 					var im:starling.display.Image = new starling.display.Image(tex);
 					im.width = width;
 					im.height = height;
+					im.smoothing = TextureSmoothing.NONE;
 					addChild(im);
 				}
 			}
