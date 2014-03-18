@@ -38,10 +38,10 @@ package morn.core.components {
 		}
 		
 		override protected function changeLabelSize():void {
-			_btnLabel.width = _btnLabel.textField.textWidth + offsetx;
-			_btnLabel.height = _btnLabel.textField.textHeight + offsety;
+			_btnLabel.width = _btnLabel.textField.textWidth + offsetx;//ObjectUtils.getTextField(_btnLabel.format).width + offsetx;
+			_btnLabel.height = ObjectUtils.getTextField(_btnLabel.format).height + offsety + 0.5;//_btnLabel.textField.textHeight + offsety;//ObjectUtils.getTextField(_btnLabel.format).height + offsety;
 			_btnLabel.x = _bitmap.width + _labelMargin[0];
-			_btnLabel.y = (_bitmap.height - _btnLabel.height) * 0.5 + _labelMargin[1];
+			_btnLabel.y = (_bitmap.height - _btnLabel.height + 1) * 0.5 + _labelMargin[1];
 			
 			reDraw();
 		}

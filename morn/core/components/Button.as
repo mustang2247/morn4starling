@@ -128,7 +128,7 @@ package morn.core.components {
 		
 		protected function changeLabelSize():void {
 			_btnLabel.width = width - _labelMargin[0] - _labelMargin[2];
-			_btnLabel.height = ObjectUtils.getTextField(_btnLabel.format).height;
+			_btnLabel.height = ObjectUtils.getTextField(_btnLabel.format).height + 0.5;
 			_btnLabel.x = _labelMargin[0];
 			_btnLabel.y = (height - _btnLabel.height) * 0.5 + _labelMargin[1] - _labelMargin[3];
 			
