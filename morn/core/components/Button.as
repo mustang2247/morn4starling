@@ -30,6 +30,7 @@ package morn.core.components {
 		protected var _bitmap:AutoBitmap;
 		protected var _btnLabel:Label;
 		protected var _clickHandler:Handler;
+		protected var _touchEndclickHandler:Handler;
 		protected var _labelColors:Array = Styles.buttonLabelColors;
 		protected var _labelMargin:Array = Styles.buttonLabelMargin;
 		protected var _state:int;
@@ -70,9 +71,11 @@ package morn.core.components {
 				if (_toggle) {
 					selected = !_selected;
 				}
+				
 				if (_clickHandler) {
 					_clickHandler.execute();
 				}
+				
 				sendEvent(Event.SELECT);
 				return;
 			}
@@ -92,6 +95,13 @@ package morn.core.components {
 				if(touch)
 				{
 					state = stateMap["rollOut"];
+				}
+			}
+			
+			touch = e.getTouch(e.currentTarget as DisplayObject, TouchPhase.ENDED);
+			if(touch){
+				if (_touchEndclickHandler) {
+					_touchEndclickHandler.execute();
 				}
 			}
 		}
@@ -284,12 +294,21 @@ package morn.core.components {
 		}
 		
 		/**点击处理器(无默认参数)*/
-		public function get clickHandler():Handler {
+		public function get clickHandler():Handler
+		{
 			return _clickHandler;
 		}
-		
-		public function set clickHandler(value:Handler):void {
+		public function set clickHandler(value:Handler):void
+		{
 			_clickHandler = value;
+		}
+		
+		public function get touchEndClickHandler():Handler {
+			return _touchEndclickHandler;
+		}
+		
+		public function set touchEndClickHandler(value:Handler):void {
+			_touchEndclickHandler = value;
 		}
 		
 		/**按钮标签控件*/

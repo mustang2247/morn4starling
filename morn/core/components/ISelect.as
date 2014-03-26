@@ -11,5 +11,7 @@ package morn.core.components {
 		function set selected(value:Boolean):void
 		function get clickHandler():Handler;
 		function set clickHandler(value:Handler):void;
+		function get touchEndClickHandler():Handler;
+		function set touchEndClickHandler(value:Handler):void;
 	}
 }
