@@ -157,14 +157,22 @@ package morn.core.components {
 			super.width = value;
 			_bitmap.width = width;
 			
-			App.render.callLater(reDraw);
+			if(sizeGrid != ""){
+				App.render.callLater(reDraw);
+			}else{
+				_mainImg.width = width;	
+			}
 		}
 		
 		override public function set height(value:Number):void {
 			super.height = value;
 			_bitmap.height = height;
 			
-			App.render.callLater(reDraw);
+			if(sizeGrid != ""){
+				App.render.callLater(reDraw);
+			}else{
+				_mainImg.height = height;	
+			}
 		}
 		
 		/**九宫格信息(格式:左边距,上边距,右边距,下边距)*/
